@@ -1,0 +1,84 @@
+- Function execute() của Controller sẽ phải trả về 1 trong các loại "result object" sau:
+
++Page result (\Magento\Framework\View\Result\PageFactory): Loại thông dụng nhất, trả về 1 trang html (được tạo ra bởi layout, block và template).
+
++JSON result (\Magento\Framework\Controller\Result\JsonFactory): Trả về 1 JSON object, dùng khi muốn thiết kế các APIs (dùng trong các web service hoặc trả về kết quả cho views sử dụng AJAX)
+
++Raw result (\Magento\Framework\Controller\Result): Trả về 1 plain string (không có layout hay template)
+
++Forward result (\Magento\Framework\Controller\Result\ForwardFactory): Điều hướng sang 1 action khác nhưng không gửi lại 1 HTTP request mới (không thay đổi URL)
+
++Redirect result (\Magento\Framework\Controller\Result\RedirectFactory): Điều hướng sang 1 route khác bằng HTTP request (tương đương với việc người dùng truy cập vào 1 route khác, URL thay đổi)
+
+Setup scripts
+
+- Bảng setup_modules trong database sẽ lưu trữ thông tin về các module đã cài đặt kèm theo version của chúng.
+
+- Ngoài InstallSchema script, còn có các script khác như:
+
+UpgradeSchema: Thay đổi cấu trúc bảng khi module được Update (khi module ra version mới, có thể test bằng cách tăng version của module sau đó chạy lệnh bin/magento setup:upgrade)
+InstallData + UpgradeData: Insert dữ liệu, cập nhật dữ liệu cho bảng, chạy sau các script InstallSchema và UpgradeSchema.
+Recurring + RecurringData: Script chạy sau các setup scripts khác (schema và data), dùng để thực hiện các bước cuối cùng của cài đặt (ví dụ như thực hiện update index)
+Uninstall: Chạy khi module được uninstall, dùng để xóa hết các table, dữ liệu liên quan đến module
+- Khi tạo bảng nên đặt tên bảng kèm theo prefix ví dụ tên Vendor như robin_banner để tránh các module khác nhau sử dụng bảng giống nhau.
+
+
+Model:
+Tham khảo các phương thức tương tác với model trong class \Magento\Framework\Model\AbstractModel tại thư mục lib > internal > Magento > Framework > Model > AbstractModel.php
+- Không phải Model nào cũng dùng để tương tác với Cơ sở dữ liệu
+
+- Ngoài cách khởi tạo model bằng objectManager chúng ta có thể sử dụng Factory class (code dài hơn 1 chút nhưng tường minh hơn). Đó là class được tự tạo bởi hệ thống dựa vào tên model và thêm đuôi Factory, ví dụ model banner thì có factory là bannerFactory. Tham khảo cách khởi tạo object bằng factory :https://devdocs.magento.com/guides/v2.3/extension-dev-guide/factories.html
+
+
+_objectManager crud
+    $banner=$this->_objectManager->create("Techmaster\bai1\Model\Banner");
+    // $banner->addData([
+
+    //  'link'=>'banner link',
+    //  'image'=>'avatar.jpg',
+
+
+    // ])->save();
+    //hien thi 1 ban ghi 
+      $data=$banner->load(1)->getData();
+      var_dump($data);
+      //edit ban ghi
+       
+      $data->setImage("dmm")->save();
+      // delete 
+      $data->delete();
+
+
+
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+alias cache:clean='docker-compose exec --user www-data apache /var/www/html/bin/magento cache:clean'
+alias cache:flush='docker-compose exec --user www-data apache /var/www/html/bin/magento cache:flush'
+alias container:start='docker start $(docker ps -a -q)'
+alias container:stop='docker stop $(docker ps -a -q)'
+alias deploy:mode:set:developer='docker-compose exec --user www-data apache /var/www/html/bin/magento deploy:mode:set developer'
+alias deploy:mode:show='docker-compose exec --user www-data apache /var/www/html/bin/magento deploy:mode:show'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias grep='grep --color=auto'
+alias indexer:reindex='docker-compose exec --user www-data apache /var/www/html/bin/magento indexer:reindex'
+alias l='ls -CF'
+alias la='ls -A'
+alias ll='ls -alF'
+alias ls='ls --color=auto'
+alias module:enable='docker-compose exec --user www-data apache /var/www/html/bin/magento module:enable'
+alias module:status='docker-compose exec --user www-data apache /var/www/html/bin/magento module:status'
+alias setup:di:compile='docker-compose exec --user www-data apache /var/www/html/bin/magento setup:di:compile'
+alias setup:static-content:deploy='docker-compose exec --user www-data apache /var/www/html/bin/magento setup:static-content:deploy -f'
+alias setup:upgrade='docker-compose exec --user www-data apache /var/www/html/bin/magento setup:upgrade'
+alias tor:start='torbrowser-launcher'
+
+
+
+
+
+
+
+
+
+
+
